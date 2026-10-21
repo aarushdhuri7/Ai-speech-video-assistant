@@ -8,9 +8,12 @@ os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 def download_youtube_audio(url: str) -> str:
     output_path = os.path.join(DOWNLOAD_DIR, "%(title)s.%(ext)s")
+
     ydl_opts = {
         "format": "bestaudio/best",
         "outtmpl": output_path,
+        "js_runtimes": {"deno": {}},
+        "remote_components": ["ejs:npm"],
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
@@ -20,11 +23,15 @@ def download_youtube_audio(url: str) -> str:
         ],
         "quiet": True,
     }
+
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)
         filename = (
-            ydl.prepare_filename(info).replace(".webm", ".wav").replace(".m4a", ".wav")
+            ydl.prepare_filename(info)
+            .replace(".webm", ".wav")
+            .replace(".m4a", ".wav")
         )
+
     return filename
 
 
@@ -46,8 +53,8 @@ def chunk_audio(wav_path: str, chunk_minutes: int = 10) -> list:
         chunk = audio[start : start + chunk_ms]
         chunk_path = f"{wav_path}_chunk_{i}.wav"
         chunk.export(chunk_path, format="wav")
-
         chunks.append(chunk_path)
+
     return chunks
 
 
@@ -62,4 +69,5 @@ def process_input(source: str) -> list:
     print("Chunking the audio...")
     chunks = chunk_audio(wav_path)
     print(f"Audio processing complete. Generated {len(chunks)} chunks.")
+
     return chunks
