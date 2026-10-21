@@ -4,7 +4,7 @@ import type { AnalysisSession } from './types';
 // In development, if not provided, default to empty string so it leverages Vite's dev proxy.
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
   ? import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '')
-  : '';
+  : 'https://ai-speech-video-assistant.onrender.com';
 
 export async function submitYoutubeAnalysis(
   url: string,
