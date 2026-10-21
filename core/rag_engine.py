@@ -1,4 +1,4 @@
-from langchain_ollama import ChatOllama
+from core.llm_factory import get_shared_llm
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough, RunnableLambda
@@ -6,10 +6,7 @@ from core.vector_store import build_vector_store, load_vector_store, get_retriev
 
 
 def get_llm():
-    return ChatOllama(
-        model="qwen3:8b",
-        temperature=0.3,
-    )
+    return get_shared_llm(temperature=0.3, disable_thinking=True)
 
 
 def format_docs(docs):
